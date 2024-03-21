@@ -16,6 +16,7 @@ dependencies:
   # 윈도우 소프트웨어
   fluent_ui: ^4.8.6
   window_manager: ^0.3.8
+  screen_retriever: ^0.1.9
 
   cupertino_icons: ^1.0.2
 
