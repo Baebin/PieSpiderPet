@@ -9,7 +9,7 @@ class Spider {
   Location location = Location();
   Window window = Window();
 
-  double walkSpeed = 50.0;
+  double walkSpeed = 12.0;
   double runSpeed = 30.0;
 
   int _count = 0;
@@ -58,25 +58,30 @@ class Spider {
       return;
     speed = min(max(speed, 1.0), 100.0);
 
-    double dx = (next.x - location.x) / 1000;
-    double dy = (next.y - location.y) / 1000;
+    double dx = (speed / 10) * (location.x < next.x ? 1 : -1);
+    double dy = (speed / 10) * (location.y < next.y ? 1 : -1);
 
     _isMoving = true;
     int count = (++_count);
-    double weight = (100/(101-speed));
-
-    double progress = 0.0;
     while (_isMoving && count == _count) {
-      print('progress: ${progress}');
-      location.x += dx * weight;
-      location.y += dy * weight;
+      location.x += dx;
+      location.y += dy;
       Offset offset = Offset(location.x, location.y);
 
       windowManager.setPosition(
         offset,
         animate: true,
       );
-      if ((progress += weight) >= 1000) {
+      if ((location.x - next.x).abs() <= dx.abs()) {
+        location.x = next.x;
+        dx = 0.0;
+      }
+      if ((location.y - next.y).abs() <= dy.abs()) {
+        location.y = next.y;
+        dy = 0.0;
+      }
+      print('${dx}, ${dy}, ${(location.y - next.y).abs()}');
+      if (dx == 0.0 && dy == 0.0) {
         _isMoving = false;
         break;
       }

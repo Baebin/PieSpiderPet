@@ -34,13 +34,18 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
       await windowManager.setPosition(
         Offset(spider.location.x, spider.location.y),
       );
-      Timer.periodic(const Duration(milliseconds: 3000), (timer) async {
-        Display display = await screenRetriever.getPrimaryDisplay();
-        double range = Random().nextDouble() * 500.0 + 50.0;
-        spider.moveRadius(
-          range: range,
-        );
-      });
+      while (true) {
+        double range = Random().nextDouble() * 100.0 + 50.0;
+        // Long Move
+        if (Random().nextInt(3) == 0)
+          range += Random().nextDouble() * 150.0;
+        print('range: ${range}');
+        await spider.moveRadius(range: range);
+
+        // Break Time
+        int waitMillis = Random().nextInt(500);
+        await Future.delayed(Duration(milliseconds: waitMillis));
+      }
     });
   }
 
