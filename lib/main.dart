@@ -1,7 +1,6 @@
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/material.dart';
 import 'package:pie_spider_pet/spider_page.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,15 +9,18 @@ void main() async {
   WindowOptions windowOptions = const WindowOptions(
     size: Size(100, 100),
     center: true,
-    skipTaskbar: false,
+    skipTaskbar: true,
     titleBarStyle: TitleBarStyle.hidden,
-    backgroundColor: Color.fromRGBO(0, 0, 0, 0),
-    windowButtonVisibility: true,
+    backgroundColor: Colors.transparent,
+    windowButtonVisibility: false,
     alwaysOnTop: true,
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.setAsFrameless();
     await windowManager.show();
     await windowManager.focus();
+    await windowManager.setResizable(false);
+    await windowManager.setHasShadow(false);
   });
 
   runApp(const MyApp());
