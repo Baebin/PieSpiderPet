@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pie_spider_pet/spider_page.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -23,7 +24,7 @@ void main() async {
     await windowManager.setHasShadow(false);
   });
 
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

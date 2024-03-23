@@ -27,7 +27,7 @@ class Spider {
     this.runSpeed = runSpeed ?? this.runSpeed;
   }
 
-  Future<void> moveRadius({
+  Future<Location> moveRadius({
     required double range,
   }) async {
     // x^2 + y^2 = range^2
@@ -43,10 +43,11 @@ class Spider {
     double y = min(max(location.y + dy, 0.0), window.height);
 
     Location next = Location(x: x, y: y);
-    await move(
+    move(
         next: next,
         speed: walkSpeed
     );
+    return next;
   }
 
   Future<void> move({
