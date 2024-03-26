@@ -39,6 +39,10 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
         Offset(spider.location.x, spider.location.y),
       );
       while (true) {
+        if (spider.isMoving) {
+          await Future.delayed(const Duration(milliseconds: 100));
+          continue;
+        }
         double range = Random().nextDouble() * 100.0 + 50.0;
         // Long Move
         if (Random().nextInt(3) == 0)
@@ -57,7 +61,7 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
             .update((state) => 0);
         for (double i = 0, angle = preAngle; i < 100; i++, angle += dR) {
           ref.read(_angleProvider.notifier)
-              .update((state) => angle/2);
+              .update((state) => angle/5);
           await Future.delayed(const Duration(milliseconds: 10));
         }
         // Break Time

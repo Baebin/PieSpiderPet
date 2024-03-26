@@ -12,6 +12,8 @@ class Location {
   double getAngle(Location location) {
     double rx = (location.x - x);
     double ry = (location.y - y);
-    return atan(ry/rx);
+    double radian = atan(ry/rx);
+    // Exception Handle
+    return (radian != radian ? 0 : radian);
   }
 }

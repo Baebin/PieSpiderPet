@@ -15,6 +15,8 @@ class Spider {
   int _count = 0;
   bool _isMoving = false;
 
+  bool get isMoving => _isMoving;
+
   Spider({
     Location? location,
     Window? window,
@@ -65,22 +67,21 @@ class Spider {
     _isMoving = true;
     int count = (++_count);
     while (_isMoving && count == _count) {
-      location.x += dx;
-      location.y += dy;
-      Offset offset = Offset(location.x, location.y);
+      if ((location.x - next.x).abs() <= dx.abs()) {
+        location.x = next.x;
+        dx = 0.0;
+      } else location.x += dx;
+      if ((location.y - next.y).abs() <= dy.abs()) {
+        location.y = next.y;
+        dy = 0.0;
+      } else location.y += dy;
 
+      Offset offset = Offset(location.x, location.y);
       windowManager.setPosition(
         offset,
         animate: true,
       );
-      if ((location.x - next.x).abs() <= dx.abs()) {
-        location.x = next.x;
-        dx = 0.0;
-      }
-      if ((location.y - next.y).abs() <= dy.abs()) {
-        location.y = next.y;
-        dy = 0.0;
-      }
+
       print('${dx}, ${dy}, ${(location.y - next.y).abs()}');
       if (dx == 0.0 && dy == 0.0) {
         _isMoving = false;
