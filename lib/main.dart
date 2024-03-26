@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pie_spider_pet/spider_page.dart';
+import 'package:pie_spider_pet/utils/image_path.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -17,9 +18,11 @@ void main() async {
     alwaysOnTop: true,
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.setIgnoreMouseEvents(true);
     await windowManager.setAsFrameless();
     await windowManager.show();
     await windowManager.focus();
+    await windowManager.setIcon(ImagePath.spiderIcon);
     await windowManager.setResizable(false);
     await windowManager.setHasShadow(false);
   });
