@@ -1,16 +1,20 @@
-# pie_spider_pet
+[<img src="https://capsule-render.vercel.app/api?type=venom&height=300&color=gradient&text=Pie%20Spider%20Pet&fontAlign=50&animation=twinkling&textBg=false&fontColor=FFFFFF&stroke=85B8FF&fontSize=70&rotate=3&strokeWidth=1&descAlignY=50&section=header&reversal=false&fontAlignY=50" />
+](https://capsule-render.vercel.app/api?type=waving&height=300&color=gradient&text=Pie%20Spider%20Pet&reversal=false&textBg=false&section=header&descAlign=50&animation=twinkling)
 
-Flutter Project
+# Pie Spider Pet
+Pie Spider Pet is a **Windows Software**.
 
-## Getting Started
+## Tech Stack
+<img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=Flutter&logoColor=white">
 
-This project is a starting point for a Flutter application.
+We are using **Flutter**.
 
-A few resources to get you started if this is your first Flutter project:
+## Support
+- The Software targets ***Windows OS***.
+- *Currently Mac is not supported.*
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Download
+- The app is currently available for download [**here**](https://github.com/Baebin/PieSpiderPet/releases).
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Developers
+- [**Baebin**](https://github.com/Baebin)
