@@ -1,8 +1,8 @@
 name: pie_spider_pet
-description: "Flutter Project"
+description: "Windows Spider Pet Project"
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 0.0.1+1
 
 environment:
   sdk: '>=3.2.0 <4.0.0'
