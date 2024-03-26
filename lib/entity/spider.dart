@@ -1,6 +1,6 @@
 import 'dart:math';
+import 'dart:ui';
 
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:pie_spider_pet/entity/location.dart';
 import 'package:pie_spider_pet/entity/window.dart';
 import 'package:window_manager/window_manager.dart';
@@ -16,6 +16,8 @@ class Spider {
   bool _isMoving = false;
 
   bool get isMoving => _isMoving;
+
+  Function(Location location) setLocation = (location) {};
 
   Spider({
     Location? location,
@@ -76,11 +78,7 @@ class Spider {
         dy = 0.0;
       } else location.y += dy;
 
-      Offset offset = Offset(location.x, location.y);
-      windowManager.setPosition(
-        offset,
-        animate: true,
-      );
+      setLocation(location);
 
       print('${dx}, ${dy}, ${(location.y - next.y).abs()}');
       if (dx == 0.0 && dy == 0.0) {

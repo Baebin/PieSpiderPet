@@ -21,19 +21,36 @@ class SpiderPage extends ConsumerStatefulWidget {
 class SpiderPageState extends ConsumerState<SpiderPage> {
   Spider spider = Spider();
 
+  Location loc = Location();
+
+  final _spiderLocationProvider = StateProvider<Location>((ref) => Location(x: 0, y: 0));
+
   final _rotationProvider = StateProvider<double>((ref) => 0.0);
   final _angleProvider = StateProvider<double>((ref) => 0.0);
 
+  void _setSpiderLocation(Location location) {
+    setState(() {
+      loc = location;
+    });
+    /*
+    ref.read(_spiderLocationProvider.notifier)
+        .update((state) => location);
+    */
+  }
+
   @override
   void initState() {
+    spider.setLocation = (Location location) =>
+        _setSpiderLocation(location);
+
     screenRetriever.getPrimaryDisplay().then((display) async {
       Size size = display.size;
       spider.window.width = size.width;
       spider.window.height = size.height;
       print('size: ${size.width} ${size.height}');
 
-      spider.location.x = spider.window.width/2;
-      spider.location.y = spider.window.height/2;
+      spider.location.x = spider.window.width / 2;
+      spider.location.y = spider.window.height / 2;
 
       await windowManager.setPosition(
         Offset(spider.location.x, spider.location.y),
@@ -57,11 +74,12 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
         if (spider.location.x < next.x)
           ref.read(_rotationProvider.notifier)
               .update((state) => pi);
-        else ref.read(_rotationProvider.notifier)
-            .update((state) => 0);
+        else
+          ref.read(_rotationProvider.notifier)
+              .update((state) => 0);
         for (double i = 0, angle = preAngle; i < 100; i++, angle += dR) {
           ref.read(_angleProvider.notifier)
-              .update((state) => angle/5);
+              .update((state) => angle / 5);
           await Future.delayed(const Duration(milliseconds: 10));
         }
         // Break Time
@@ -73,17 +91,37 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Transform(
-      alignment: Alignment.center,
-      transform: Matrix4.rotationY(
-        ref.watch(_rotationProvider),
-      ),
-      child: Transform.rotate(
-        angle: ref.watch(_angleProvider),
-        child: Image.asset(
-          ImagePath.spider,
+    return Stack(
+      children: [
+        Positioned(
+          left: loc.x + 75,
+          child: Container(
+            width: 2,
+            height: loc.y + 75,
+            color: Colors.white,
+          ),
         ),
-      ),
+        Positioned(
+          top: loc.y,
+          left: loc.x,
+          child: SizedBox(
+            width: 150,
+            height: 150,
+            child: Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.rotationY(
+                ref.watch(_rotationProvider),
+              ),
+              child: Transform.rotate(
+                angle: ref.watch(_angleProvider),
+                child: Image.asset(
+                  ImagePath.spider,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

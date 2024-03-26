@@ -9,13 +9,13 @@ void main() async {
   await windowManager.ensureInitialized();
 
   WindowOptions windowOptions = const WindowOptions(
-    size: Size(100, 100),
     center: true,
     skipTaskbar: true,
     titleBarStyle: TitleBarStyle.hidden,
     backgroundColor: Colors.transparent,
     windowButtonVisibility: false,
     alwaysOnTop: true,
+    fullScreen: true,
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.setIgnoreMouseEvents(true);
@@ -35,6 +35,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SpiderPage();
+    return const MaterialApp(
+      home: const SpiderPage(),
+    );
   }
 }
