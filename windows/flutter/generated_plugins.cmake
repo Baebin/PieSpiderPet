@@ -3,6 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  flutter_auto_gui_windows
+  mouse_event
   screen_retriever
   window_manager
 )

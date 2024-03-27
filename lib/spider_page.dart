@@ -5,8 +5,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mouse_event/mouse_event.dart';
 import 'package:pie_spider_pet/entity/location.dart';
 import 'package:pie_spider_pet/entity/spider.dart';
+import 'package:pie_spider_pet/entity/window.dart';
 import 'package:pie_spider_pet/utils/image_path.dart';
 import 'package:screen_retriever/screen_retriever.dart';
 import 'package:window_manager/window_manager.dart';
@@ -21,28 +23,24 @@ class SpiderPage extends ConsumerStatefulWidget {
 class SpiderPageState extends ConsumerState<SpiderPage> {
   Spider spider = Spider();
 
-  Location loc = Location();
-
-  final _spiderLocationProvider = StateProvider<Location>((ref) => Location(x: 0, y: 0));
+  // Used instead of Riverpod for better performance
+  Location spiderLoc = Location();
 
   final _rotationProvider = StateProvider<double>((ref) => 0.0);
   final _angleProvider = StateProvider<double>((ref) => 0.0);
 
   void _setSpiderLocation(Location location) {
     setState(() {
-      loc = location;
+      spiderLoc = location;
     });
-    /*
-    ref.read(_spiderLocationProvider.notifier)
-        .update((state) => location);
-    */
   }
 
   @override
   void initState() {
+    super.initState();
+
     spider.setLocation = (Location location) =>
         _setSpiderLocation(location);
-
     screenRetriever.getPrimaryDisplay().then((display) async {
       Size size = display.size;
       spider.window.width = size.width;
@@ -87,26 +85,55 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
         await Future.delayed(Duration(milliseconds: waitMillis));
       }
     });
+    MouseEventPlugin.startListening((mouseEvent) {
+      String event = mouseEvent.toString();
+      if (!event.contains('WM_LBUTTONDOWN'))
+        return;
+      List<String> coordinates = event.split('WM_LBUTTONDOWN')[1]
+          .replaceAll('(', '').replaceAll(')', '')
+          .split('x');
+      Location cursorLoc = Location.fromCursor(
+        spider.window,
+        Location(
+          x: double.parse(coordinates[0]),
+          y: double.parse(coordinates[1]),
+        ),
+      );
+      if (spider.isInSpider(cursorLoc))
+        spider.moveToCursor();
+      print('spiderLoc: ${spider.location.x} ${spiderLoc.y}, ${spider.window.width}, ${spider.window.height}');
+      print('mouseEvent: ${coordinates} -> ${cursorLoc.x}, ${cursorLoc.y}');
+      print('isInSpider: ${spider.isInSpider(cursorLoc)}');
+      print('${MediaQuery.sizeOf(context).width} !! ${MediaQuery.sizeOf(context).height}');
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    MouseEventPlugin.cancelListening();
   }
 
   @override
   Widget build(BuildContext context) {
+    Window size = spider.size;
     return Stack(
       children: [
         Positioned(
-          left: loc.x + 75,
+          left: spiderLoc.x,
           child: Container(
             width: 2,
-            height: loc.y + 75,
+            height: spiderLoc.y,
             color: Colors.white,
           ),
         ),
         Positioned(
-          top: loc.y,
-          left: loc.x,
+          top: spiderLoc.y - size.height/2,
+          left: spiderLoc.x - size.width/2,
           child: SizedBox(
-            width: 150,
-            height: 150,
+            width: size.width,
+            height: size.height,
             child: Transform(
               alignment: Alignment.center,
               transform: Matrix4.rotationY(
@@ -114,7 +141,7 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
               ),
               child: Transform.rotate(
                 angle: ref.watch(_angleProvider),
-                child: Image.asset(
+                child:Image.asset(
                   ImagePath.spider,
                 ),
               ),

@@ -1,12 +1,16 @@
 import 'dart:math';
-import 'dart:ui';
 
+import 'package:flutter_auto_gui/flutter_auto_gui.dart';
 import 'package:pie_spider_pet/entity/location.dart';
 import 'package:pie_spider_pet/entity/window.dart';
-import 'package:window_manager/window_manager.dart';
 
 class Spider {
   Location location = Location();
+
+  Window size = Window(
+      width: 150,
+      height: 150
+  );
   Window window = Window();
 
   double walkSpeed = 12.0;
@@ -29,6 +33,19 @@ class Spider {
     this.window = window ?? this.window;
     this.walkSpeed = walkSpeed ?? this.walkSpeed;
     this.runSpeed = runSpeed ?? this.runSpeed;
+  }
+
+  bool isInSpider(Location location) {
+    double x = this.location.x;
+    double y = this.location.y;
+    double dx = location.x;
+    double dy = location.y;
+    double width = this.size.width;
+    double height = this.size.height;
+    return (
+        (x - width/2 <= dx && dx <= x + width/2)
+            && (y - height/2 <= dy && dy <= y + height/2)
+    );
   }
 
   Future<Location> moveRadius({
@@ -59,8 +76,6 @@ class Spider {
     // 1.0 ~ 100.0
     required double speed,
   }) async {
-    if (_isMoving)
-      return;
     speed = min(max(speed, 1.0), 100.0);
 
     double dx = (speed / 10) * (location.x < next.x ? 1 : -1);
@@ -79,13 +94,25 @@ class Spider {
       } else location.y += dy;
 
       setLocation(location);
-
-      print('${dx}, ${dy}, ${(location.y - next.y).abs()}');
+      // print('${dx}, ${dy}, ${(location.y - next.y).abs()}');
       if (dx == 0.0 && dy == 0.0) {
         _isMoving = false;
         break;
       }
       await Future.delayed(const Duration(milliseconds: 20));
     }
+  }
+
+  Future<void> moveToCursor() async {
+    Point<int>? position = await FlutterAutoGUI.position();
+    if (position == null)
+      return;
+    Location cursorLoc = Location.fromCursor(
+      window,
+      Location(
+        x: position.x.toDouble(),
+        y: position.y.toDouble(),
+      ),
+    );
   }
 }

@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:pie_spider_pet/entity/window.dart';
+
 class Location {
   double x;
   double y;
@@ -15,5 +17,12 @@ class Location {
     double radian = atan(ry/rx);
     // Exception Handle
     return (radian != radian ? 0 : radian);
+  }
+
+  static Location fromCursor(Window window, Location cursor) {
+    return Location(
+        x: window.width * (cursor.x / 1920),
+        y: window.height * (cursor.y / 1080)
+    );
   }
 }

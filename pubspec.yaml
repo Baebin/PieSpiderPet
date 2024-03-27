@@ -16,6 +16,10 @@ dependencies:
   # 윈도우 창 관리
   window_manager: ^0.3.8
 
+  # 이벤트 제어
+  mouse_event: ^0.2.1
+  flutter_auto_gui: ^0.0.3
+
   # 모니터 정보
   screen_retriever: ^0.1.9
 
