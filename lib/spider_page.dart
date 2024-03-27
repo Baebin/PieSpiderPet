@@ -76,6 +76,7 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
           ref.read(_rotationProvider.notifier)
               .update((state) => 0);
         for (double i = 0, angle = preAngle; i < 100; i++, angle += dR) {
+          spider.angle = angle / 5;
           ref.read(_angleProvider.notifier)
               .update((state) => angle / 5);
           await Future.delayed(const Duration(milliseconds: 10));

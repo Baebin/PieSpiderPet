@@ -9,10 +9,11 @@ class Spider {
 
   Window size = Window(
       width: 150,
-      height: 150
+      height: 100
   );
   Window window = Window();
 
+  double angle = 0.0;
   double walkSpeed = 12.0;
   double runSpeed = 30.0;
 
@@ -114,5 +115,25 @@ class Spider {
         y: position.y.toDouble(),
       ),
     );
+    print('curLoc: ${location.x}, ${location.y}');
+    print('cursorLoc: ${cursorLoc.x}, ${cursorLoc.y}');
+
+    // Taxi Distance
+    double dy = sin(angle) * 400;
+    double dx = cos(angle) * 400;
+    print('hehe ${dx}, ${dy}');
+
+    Point nP = Point(cursorLoc.x.toInt() + dx, cursorLoc.y.toInt() + dy);
+    Location next = Location(
+      x: nP.x.toDouble(),
+      y: nP.y.toDouble(),
+    );
+    int dis = max((nP.x - location.x).toInt().abs(), (nP.y - location.y).toInt().abs());
+    double millis = (dis * 200) / runSpeed;
+    await FlutterAutoGUI.moveTo(
+      point: Point(nP.x.toInt(), nP.y.toInt()),
+      duration: Duration(milliseconds: millis.toInt()),
+    );
+    move(next: next, speed: runSpeed);
   }
 }
