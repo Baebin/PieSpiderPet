@@ -22,7 +22,14 @@ class Location {
   static Location fromCursor(Window window, Location cursor) {
     return Location(
         x: window.width * (cursor.x / 1920),
-        y: window.height * (cursor.y / 1080)
+        y: window.height * (cursor.y / 1080),
+    );
+  }
+
+  static Location toCursor(Window window, Location loc) {
+    return Location(
+        x: 1920 * (loc.x / window.width),
+        y: 1080 * (loc.y / window.height),
     );
   }
 }

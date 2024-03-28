@@ -82,7 +82,7 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
           await Future.delayed(const Duration(milliseconds: 10));
         }
         // Break Time
-        int waitMillis = Random().nextInt(500);
+        int waitMillis = Random().nextInt(100);
         await Future.delayed(Duration(milliseconds: waitMillis));
       }
     });

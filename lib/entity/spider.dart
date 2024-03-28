@@ -58,8 +58,10 @@ class Spider {
     double dy = sqrt((range * range) - (dx * dx));
 
     print('dx: ${dx}, ${dy}');
-    dx *= (Random().nextBool() ? 1 : -1);
-    dy *= (Random().nextBool() ? 1 : -1);
+    int rX = (location.x < window.width/2 ? 1 : -1);
+    int rY = (location.y < window.height/2 ? 1 : -1);
+    dx *= (Random().nextInt(10) < 6 ? rX : -rX);
+    dy *= (Random().nextInt(10) < 6 ? rY : -rY);
 
     double x = min(max(location.x + dx, 0.0), window.width);
     double y = min(max(location.y + dy, 0.0), window.height);
@@ -118,22 +120,23 @@ class Spider {
     print('curLoc: ${location.x}, ${location.y}');
     print('cursorLoc: ${cursorLoc.x}, ${cursorLoc.y}');
 
-    // Taxi Distance
-    double dy = sin(angle) * 400;
-    double dx = cos(angle) * 400;
-    print('hehe ${dx}, ${dy}');
+    double tmpSpeed = this.walkSpeed;
+    this.walkSpeed = this.runSpeed;
 
-    Point nP = Point(cursorLoc.x.toInt() + dx, cursorLoc.y.toInt() + dy);
-    Location next = Location(
-      x: nP.x.toDouble(),
-      y: nP.y.toDouble(),
-    );
-    int dis = max((nP.x - location.x).toInt().abs(), (nP.y - location.y).toInt().abs());
-    double millis = (dis * 200) / runSpeed;
-    await FlutterAutoGUI.moveTo(
-      point: Point(nP.x.toInt(), nP.y.toInt()),
-      duration: Duration(milliseconds: millis.toInt()),
-    );
-    move(next: next, speed: runSpeed);
+    moveRadius(range: 300);
+
+    int i = 0;
+    while (i++ != 750) {
+      Location cursor = Location.toCursor(window, location);
+      await FlutterAutoGUI.moveTo(
+        point: Point(cursor.x.toInt(), cursor.y.toInt()),
+      );
+      if (i % 50 == 0)
+        moveRadius(range: 300);
+      await Future.delayed(
+        const Duration(milliseconds: 10),
+      );
+    }
+    this.walkSpeed = tmpSpeed;
   }
 }
