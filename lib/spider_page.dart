@@ -39,8 +39,15 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
   void initState() {
     super.initState();
 
+    // Function Init
     spider.setLocation = (Location location) =>
         _setSpiderLocation(location);
+    spider.setAngle = (double angle) =>
+        ref.read(_angleProvider.notifier).update((state) => angle);
+    spider.setRotation = (double rotation) =>
+        ref.read(_rotationProvider.notifier).update((state) => rotation);
+
+    // Monitor Size
     screenRetriever.getPrimaryDisplay().then((display) async {
       Size size = display.size;
       spider.window.width = size.width;
@@ -63,24 +70,8 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
         if (Random().nextInt(3) == 0)
           range += Random().nextDouble() * 150.0;
         print('range: ${range}');
-        Location next = await spider.moveRadius(range: range);
+        await spider.moveRadius(range: range);
 
-        double preAngle = ref.read(_angleProvider);
-        double nextAngle = spider.location.getAngle(next);
-        double dR = (nextAngle - preAngle) / 100;
-
-        if (spider.location.x < next.x)
-          ref.read(_rotationProvider.notifier)
-              .update((state) => pi);
-        else
-          ref.read(_rotationProvider.notifier)
-              .update((state) => 0);
-        for (double i = 0, angle = preAngle; i < 100; i++, angle += dR) {
-          spider.angle = angle / 5;
-          ref.read(_angleProvider.notifier)
-              .update((state) => angle / 5);
-          await Future.delayed(const Duration(milliseconds: 10));
-        }
         // Break Time
         int waitMillis = Random().nextInt(100);
         await Future.delayed(Duration(milliseconds: waitMillis));

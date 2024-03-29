@@ -23,6 +23,8 @@ class Spider {
   bool get isMoving => _isMoving;
 
   Function(Location location) setLocation = (location) {};
+  Function(double angle) setAngle = (angle) {};
+  Function(double angle) setRotation = (rotation) {};
 
   Spider({
     Location? location,
@@ -49,7 +51,7 @@ class Spider {
     );
   }
 
-  Future<Location> moveRadius({
+  Future<void> moveRadius({
     required double range,
   }) async {
     // x^2 + y^2 = range^2
@@ -71,7 +73,14 @@ class Spider {
         next: next,
         speed: walkSpeed
     );
-    return next;
+  }
+
+  Future<void> _setAngle(double preAngle, double nextAngle, int count) async {
+    double dR = (nextAngle - preAngle) / 100;
+    for (double i = 0, angle = preAngle; i < 100 && count == _count; i++, angle += dR) {
+      setAngle(this.angle = (angle / 5));
+      await Future.delayed(const Duration(milliseconds: 10));
+    }
   }
 
   Future<void> move({
@@ -84,8 +93,18 @@ class Spider {
     double dx = (speed / 10) * (location.x < next.x ? 1 : -1);
     double dy = (speed / 10) * (location.y < next.y ? 1 : -1);
 
+    // State
     _isMoving = true;
     int count = (++_count);
+
+    // Rotation
+    setRotation(location.x < next.x ? pi : 0);
+
+    // Angle
+    double preAngle = this.angle;
+    double nextAngle = location.getAngle(next);
+    _setAngle(preAngle, nextAngle, count);
+
     while (_isMoving && count == _count) {
       if ((location.x - next.x).abs() <= dx.abs()) {
         location.x = next.x;
