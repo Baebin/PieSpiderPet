@@ -16,7 +16,10 @@ class Location {
     double ry = (location.y - y);
     double radian = atan(ry/rx);
     // Exception Handle
-    return (radian != radian ? 0 : radian);
+    double angle = (radian != radian ? 0 : radian);
+    // Strange Angle (Upside Down)
+    angle *= (rx > 0 ? -1 : 1);
+    return angle;
   }
 
   static Location fromCursor(Window window, Location cursor) {

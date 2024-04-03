@@ -61,7 +61,7 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
         Offset(spider.location.x, spider.location.y),
       );
       while (true) {
-        if (spider.isMoving) {
+        if (spider.isMoving || spider.isTargeting) {
           await Future.delayed(const Duration(milliseconds: 100));
           continue;
         }

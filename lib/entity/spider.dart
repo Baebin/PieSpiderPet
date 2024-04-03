@@ -19,8 +19,10 @@ class Spider {
 
   int _count = 0;
   bool _isMoving = false;
+  bool _isTargeting = false;
 
   bool get isMoving => _isMoving;
+  bool get isTargeting => _isTargeting;
 
   Function(Location location) setLocation = (location) {};
   Function(double angle) setAngle = (angle) {};
@@ -125,10 +127,55 @@ class Spider {
     }
   }
 
+  Future<bool> _targeting() async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    for (int i = 0; i < 1000; i++) {
+      Point<int>? position = await FlutterAutoGUI.position();
+      if (position == null)
+        continue;
+      Location cursor = Location.fromCursor(
+        window,
+        Location(x: position.x.toDouble(), y: position.y.toDouble()),
+      );
+      double dx = (runSpeed / 10) * (location.x < cursor.x ? 1 : -1);
+      double dy = (runSpeed / 10) * (location.y < cursor.y ? 1 : -1);
+
+      // Angle
+      double angle = location.getAngle(cursor);
+      print('angle: ${angle}');
+      setAngle(this.angle = angle);
+
+      // Rotation
+      setRotation(dx > 0 ? pi : 0);
+
+      if ((location.x - cursor.x).abs() <= dx.abs()) {
+        location.x = cursor.x;
+        dx = 0.0;
+      } else location.x += dx;
+      if ((location.y - cursor.y).abs() <= dy.abs()) {
+        location.y = cursor.y;
+      } else location.y += dy;
+
+      setLocation(location);
+
+      if (isInSpider(cursor))
+        return Future.value(true);
+      await Future.delayed(const Duration(milliseconds: 20));
+    }
+    return Future.value(false);
+  }
+
   Future<void> moveToCursor() async {
     Point<int>? position = await FlutterAutoGUI.position();
     if (position == null)
       return;
+    if (_isTargeting)
+      return;
+    _isTargeting = true;
+    if (!await _targeting()) {
+      _isTargeting = false;
+      return;
+    }
     Location cursorLoc = Location.fromCursor(
       window,
       Location(
@@ -145,6 +192,7 @@ class Spider {
     moveRadius(range: 300);
 
     int i = 0;
+    int times = Random().nextInt(500) + 500;
     while (i++ != 750) {
       Location cursor = Location.toCursor(window, location);
       await FlutterAutoGUI.moveTo(
@@ -157,5 +205,6 @@ class Spider {
       );
     }
     this.walkSpeed = tmpSpeed;
+    this._isTargeting = false;
   }
 }
