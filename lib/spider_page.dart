@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import 'package:pie_spider_pet/entity/location.dart';
 import 'package:pie_spider_pet/entity/spider.dart';
 import 'package:pie_spider_pet/entity/window.dart';
 import 'package:pie_spider_pet/utils/image_path.dart';
+import 'package:pie_spider_pet/widgets/spider_widget.dart';
 import 'package:screen_retriever/screen_retriever.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -29,11 +31,10 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
   final _rotationProvider = StateProvider<double>((ref) => 0.0);
   final _angleProvider = StateProvider<double>((ref) => 0.0);
 
-  void _setSpiderLocation(Location location) {
-    setState(() {
-      spiderLoc = location;
-    });
-  }
+  double? leftEyeXWeight;
+  double? leftEyeYWeight;
+  double? rightEyeXWeight;
+  double? rightEyeYWeight;
 
   @override
   void initState() {
@@ -46,6 +47,15 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
         ref.read(_angleProvider.notifier).update((state) => angle);
     spider.setRotation = (double rotation) =>
         ref.read(_rotationProvider.notifier).update((state) => rotation);
+
+    spider.setLeftEyeXWeight = (double weight) =>
+        _setLeftEyeXWeight(weight);
+    spider.setLeftEyeYWeight = (double weight) =>
+        _setLeftEyeYWeight(weight);
+    spider.setRightEyeXWeight = (double weight) =>
+        _setRightEyeXWeight(weight);
+    spider.setRightEyeYWeight = (double weight) =>
+        _setRightEyeYWeight(weight);
 
     // Monitor Size
     screenRetriever.getPrimaryDisplay().then((display) async {
@@ -133,14 +143,54 @@ class SpiderPageState extends ConsumerState<SpiderPage> {
               ),
               child: Transform.rotate(
                 angle: ref.watch(_angleProvider),
-                child:Image.asset(
-                  ImagePath.spider,
+                child: SpiderWidget(
+                  spider: spider,
+                  // [0.0, 100.0] (left, right)
+                  leftEyeXWeight: leftEyeXWeight,
+                  // [0.0, 100.0] (bottom, top)
+                  leftEyeYWeight: leftEyeYWeight,
+                  // [0.0, 100.0] (left, right)
+                  rightEyeXWeight: rightEyeXWeight,
+                  // [0.0, 100.0] (bottom, top)
+                  rightEyeYWeight: rightEyeYWeight,
                 ),
+                // Image.asset(ImagePath.spider,),
               ),
             ),
           ),
         ),
       ],
     );
+  }
+
+  /*
+  States
+  */
+
+  void _setSpiderLocation(Location location) {
+    setState(() {
+      spiderLoc = location;
+    });
+  }
+
+  void _setLeftEyeXWeight(double weight) {
+    setState(() {
+      leftEyeXWeight = weight;
+    });
+  }
+  void _setLeftEyeYWeight(double weight) {
+    setState(() {
+      leftEyeYWeight = weight;
+    });
+  }
+  void _setRightEyeXWeight(double weight) {
+    setState(() {
+      rightEyeXWeight = weight;
+    });
+  }
+  void _setRightEyeYWeight(double weight) {
+    setState(() {
+      rightEyeYWeight = weight;
+    });
   }
 }

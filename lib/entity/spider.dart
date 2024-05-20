@@ -8,8 +8,8 @@ class Spider {
   Location location = Location();
 
   Window size = Window(
-      width: 150,
-      height: 100
+      width: 180 * 0.8,
+      height: 90 * 0.8,
   );
   Window window = Window();
 
@@ -27,6 +27,11 @@ class Spider {
   Function(Location location) setLocation = (location) {};
   Function(double angle) setAngle = (angle) {};
   Function(double angle) setRotation = (rotation) {};
+
+  Function(double weight) setLeftEyeXWeight = (weight) {};
+  Function(double weight) setLeftEyeYWeight = (weight) {};
+  Function(double weight) setRightEyeXWeight = (weight) {};
+  Function(double weight) setRightEyeYWeight = (weight) {};
 
   Spider({
     Location? location,
@@ -100,7 +105,7 @@ class Spider {
     int count = (++_count);
 
     // Rotation
-    setRotation(location.x < next.x ? pi : 0);
+    setRotation(location.x < next.x ? 0 : pi);
 
     // Angle
     double preAngle = this.angle;
@@ -146,7 +151,7 @@ class Spider {
       setAngle(this.angle = angle);
 
       // Rotation
-      setRotation(dx > 0 ? pi : 0);
+      setRotation(dx > 0 ? 0 : pi);
 
       if ((location.x - cursor.x).abs() <= dx.abs()) {
         location.x = cursor.x;
@@ -190,6 +195,9 @@ class Spider {
     this.walkSpeed = this.runSpeed;
 
     moveRadius(range: 300);
+
+    // Eye Motion Init
+    setRightEyeXWeight(0.0);
 
     int i = 0;
     int times = Random().nextInt(500) + 500;

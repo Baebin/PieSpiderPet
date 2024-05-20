@@ -18,7 +18,7 @@ class Location {
     // Exception Handle
     double angle = (radian != radian ? 0 : radian);
     // Strange Angle (Upside Down)
-    angle *= (rx > 0 ? -1 : 1);
+    angle *= (rx > 0 ? 1 : -1);
     return angle;
   }
 
